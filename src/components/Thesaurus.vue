@@ -5,7 +5,11 @@
         <input v-model="userWord" type="text" name="userWord">
         <button @click="loadData()">Get ...</button>
         <div>{{ userWord }}</div>
-        <div>{{ this.wordType }}</div>
+        <div>
+            <p v-show="this.response" v-for="word in this.wordType" :key="{ word }">
+                {{ word }}
+            </p>
+        </div>
     </div>
 </template>
 
@@ -17,7 +21,7 @@ import axios from "axios";
             return{
                 userWord: "",
                 response: "",
-                wordType: "",
+                wordType: {},
                 syn: [],
                 url: ""
             }
@@ -28,7 +32,8 @@ import axios from "axios";
                 try{
                     this.response = await axios.get(this.url);
                     console.log(this.response);
-                    this.wordType = Object.keys(this.response["data"]["noun"]);
+                    this.wordType = Object.values(this.response["data"]["noun"]["syn"]);
+                    console.log(this.wordType);
                 }catch(e){
                     alert("Error: "+e.response.status+"\nMessage: "+e.response.data.error.message);
                 }
